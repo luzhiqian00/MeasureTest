@@ -33,8 +33,6 @@ class ScanActivity : AppCompatActivity() {
     // Stops scanning after 10 seconds.
     private val SCAN_PERIOD: Long = 10000
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -46,13 +44,7 @@ class ScanActivity : AppCompatActivity() {
             // 开始或停止扫描
             scanLeDevice()
         }
-
-
-
-
     }
-
-
 
     @SuppressLint("MissingPermission")
     private fun scanLeDevice() {
@@ -78,9 +70,5 @@ class ScanActivity : AppCompatActivity() {
             leDeviceListAdapter.notifyDataSetChanged()
         }
     }
-
-
-
-
 
 }

@@ -7,7 +7,7 @@
         android:id="@+id/deviceNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Device Name" />
-
+        android:text="Device Name"
+        android:textSize="16sp" /> <!-- 设置字体大小为 16sp -->
 
 </LinearLayout>
