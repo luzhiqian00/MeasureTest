@@ -1,0 +1,8 @@
+{
+  "bluetoothDevices": [
+    {
+      "name": "Device 1",
+      "address": "00:00:00:00:06:6D"
+    }
+  ]
+}

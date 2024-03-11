@@ -14,12 +14,9 @@ import com.permissionx.guolindev.PermissionX
 
 class MainActivity : AppCompatActivity() {
 
-
-
     // 伴生对象，类似于静态对象
     companion object {
         private const val TAG = "MainActivity"
-
     }
 
     // 使用懒加载初始化绑定视图
@@ -34,14 +31,11 @@ class MainActivity : AppCompatActivity() {
         // 动态申请权限
         setPermissionX()
 
-
         // 设置按钮点击事件监听器
         button.setOnClickListener{
             val intent = Intent(this,ScanActivity::class.java)
             startActivity(intent)
         }
-
-
     }
 
     /**
@@ -54,7 +48,8 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.BLUETOOTH_SCAN
+                Manifest.permission.BLUETOOTH_SCAN,
+                Manifest.permission.BLUETOOTH_CONNECT
             )
             // 解释请求权限的理由
             .onExplainRequestReason { scope, deniedList ->
