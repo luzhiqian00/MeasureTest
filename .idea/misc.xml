@@ -3,10 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/MyApplication/app/src/main/res/layout/activity_chravteristics.xml" value="0.19384057971014493" />
         <entry key="..\:/MyApplication/app/src/main/res/layout/activity_device.xml" value="0.264" />
         <entry key="..\:/MyApplication/app/src/main/res/layout/activity_main.xml" value="0.14764492753623187" />
         <entry key="..\:/MyApplication/app/src/main/res/layout/activity_scan.xml" value="0.2557291666666667" />
+        <entry key="..\:/MyApplication/app/src/main/res/layout/bluetooth_characteristcs_item_layout.xml" value="0.19384057971014493" />
+        <entry key="..\:/MyApplication/app/src/main/res/layout/bluetooth_characteristcs_layout.xml" value="0.20897435897435898" />
+        <entry key="..\:/MyApplication/app/src/main/res/layout/bluetooth_device_item_layout.xml" value="0.1" />
         <entry key="..\:/MyApplication/app/src/main/res/layout/bluetooth_device_layout.xml" value="0.24114583333333334" />
+        <entry key="..\:/MyApplication/app/src/main/res/layout/bluetooth_services_item_layout.xml" value="0.19384057971014493" />
+        <entry key="..\:/MyApplication/app/src/main/res/layout/bluetooth_services_layout.xml" value="0.2546875" />
+        <entry key="..\:/MyApplication/app/src/main/res/layout/fragment_characteristic.xml" value="0.1" />
       </map>
     </option>
   </component>

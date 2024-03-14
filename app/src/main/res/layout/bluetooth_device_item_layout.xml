@@ -10,4 +10,5 @@
         android:text="Device Name"
         android:textSize="20sp" /> <!-- 设置字体大小为 16sp -->
 
+
 </LinearLayout>

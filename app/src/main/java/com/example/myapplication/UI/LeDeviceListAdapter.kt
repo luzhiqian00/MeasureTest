@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.example.myapplication.BlueDeviceActivity
-import com.example.myapplication.MeasureApplication.Companion.context
 import com.example.myapplication.R
 
 class LeDeviceListAdapter : BaseAdapter() {
@@ -42,7 +41,7 @@ class LeDeviceListAdapter : BaseAdapter() {
         // For example:
         val device = deviceList[position]
         val view = convertView ?: LayoutInflater.from(parent?.context).inflate(
-            R.layout.bluetooth_device_layout, parent, false
+            R.layout.bluetooth_device_item_layout, parent, false
         )
         // Find the TextView in your layout
         val deviceNameTextView = view.findViewById<TextView>(R.id.deviceNameTextView)
