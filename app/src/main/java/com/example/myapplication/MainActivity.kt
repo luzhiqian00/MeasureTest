@@ -1,14 +1,10 @@
 package com.example.myapplication
 
 import android.Manifest
-import android.content.ComponentName
 import android.content.Intent
-import android.content.ServiceConnection
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.IBinder
 import android.widget.Toast
-import com.example.myapplication.ble.BLEService
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.permissionx.guolindev.PermissionX
 

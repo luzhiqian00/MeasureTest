@@ -116,8 +116,8 @@ class BlueDeviceActivity : AppCompatActivity() {
                 }
                 MyBLEService.ACTION_DATA_AVAILABLE -> {
                     Log.d(TAG,"characteristic data read successfully")
-                    val extraRawData = intent.getByteArrayExtra(MyBLEService.EXTRA_RAW_DATA)
-                    val extraHexData = intent.getStringExtra(MyBLEService.EXTRA_HEX_DATA)
+                    val extraRawData = intent.getByteArrayExtra(MyBLEService.EXTRA_RAW_DATA)//原始数据
+                    val extraHexData = intent.getStringExtra(MyBLEService.EXTRA_HEX_DATA)//转化为十六进制字符串的数据
                     val uuid =intent.getStringExtra(MyBLEService.EXTRA_UUID)
                     // 在这里处理额外的信息，更新页面
                     if (extraRawData != null) {
@@ -167,7 +167,6 @@ class BlueDeviceActivity : AppCompatActivity() {
         Log.d(TAG,"discover successfully")
         serviceDataAdapter.setServiceList(mServices)
         serviceDataAdapter.notifyDataSetChanged()
-
     }
 
 

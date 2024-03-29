@@ -187,24 +187,44 @@ class MyBLEService : Service() {
 
         // 从特征对象中获取数据
         val data: ByteArray? = characteristic.value
-
+        val rawData =data
+        var hexString: String = ""
         // 检查数据是否非空
         if (data?.isNotEmpty() == true) {
             // 将字节数组格式化为十六进制字符串
-            val hexString: String = data.joinToString(separator = " ") {
-                String.format("%02X", it)
-            }
+            hexString = data.let { byteArray ->
+                if (byteArray[0] == 0x02.toByte()) {
+                    val subArray = byteArray.copyOfRange(4, 7)
 
+                    var intValue = subArray.fold(0) { acc, byte -> (acc shl 8) or (byte.toInt() and 0xFF) }.toFloat()
+                    intValue /= 100
+                    if (byteArray.last()==0x01.toByte()){
+                        intValue = -intValue
+                    }
+                    // 将原始字节数组作为附加数据放入 Intent 中
+                    intent.putExtra(EXTRA_RAW_DATA, "测量结果".toByteArray())
+
+                    intValue.toString()+"mm"
+
+                } else {
+                    // 将原始字节数组作为附加数据放入 Intent 中
+                    intent.putExtra(EXTRA_RAW_DATA, rawData)
+                    byteArray.joinToString(separator = " ") {
+                        String.format("%02X", it)
+                    }
+                }
+
+            }
             intent.putExtra(EXTRA_UUID,characteristic.uuid.toString())
 //            // 将原始字节数组和十六进制字符串作为附加数据放入 Intent 中
 //            intent.putExtra(EXTRA_DATA, "$data\n$hexString")
-            // 将原始字节数组作为附加数据放入 Intent 中
-            intent.putExtra(EXTRA_RAW_DATA, data)
+
             // 将十六进制字符串作为附加数据放入 Intent 中
             intent.putExtra(EXTRA_HEX_DATA, hexString)
+            // 发送广播通知，携带着格式化后的特征数据
         }
 
-        // 发送广播通知，携带着格式化后的特征数据
+
         sendBroadcast(intent)
     }
 
