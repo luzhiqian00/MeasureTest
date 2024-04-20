@@ -15,9 +15,6 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
-            android:name=".ChravteristicsActivity"
-            android:exported="false" />
-        <activity
             android:name=".BlueDeviceActivity"
             android:exported="false" />
         <activity
@@ -27,19 +24,26 @@
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
+                <action android:name="com.example.MAIN_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.example.loginlibrary.login.SignUpActivity"
+            android:exported="true">
+        </activity>
+        <activity android:name="com.example.loginlibrary.LoginActivity"
+            android:exported="true">
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <service
             android:name=".ble.MyBLEService"
             android:enabled="true"
             android:exported="true" />
-        <service
-            android:name=".ble.BLEService"
-            android:enabled="true" />
+
     </application>
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH" />

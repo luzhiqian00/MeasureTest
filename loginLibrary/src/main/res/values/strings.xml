@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">路探</string>
+
+    <string name="title_activity_bottom">Bottom</string>
+    <string name="title_detect">Detect</string>
+    <string name="title_history">History</string>
+    <string name="title_setting">Setting</string>
+    <string name="protocol">登录即代表同意<font color='#4682B4'><u>相关协议</u></font></string>
+</resources>

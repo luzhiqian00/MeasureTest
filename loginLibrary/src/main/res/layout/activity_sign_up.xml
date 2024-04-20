@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@color/white">
+
+
+        <ImageView
+            android:id="@+id/LogoImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/logo" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/UserNameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/UserNameEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:hint="账号"
+                    android:textSize="16dp"
+                    app:met_primaryColor="#0056d3"
+                    app:met_floatingLabel="highlight"
+                    app:met_floatingLabelText="账号"
+                    app:met_iconLeft="@drawable/user"
+                    app:met_clearButton="true"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/PassWordLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/PassWordEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:inputType="textPassword"
+                    android:textSize="16dp"
+                    android:maxLength="16"
+                    android:hint="密码"
+                    app:met_primaryColor="#0056d3"
+                    app:met_floatingLabel="normal"
+                    app:met_floatingLabelText="密码"
+                    app:met_iconLeft="@drawable/password"
+                    app:met_clearButton= "true"
+                    />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/PasswordAgainLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/PassWordAgainEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:inputType="textPassword"
+                    android:textSize="16dp"
+                    android:maxLength="16"
+                    android:hint="再次输入密码"
+                    app:met_primaryColor="#0056d3"
+                    app:met_floatingLabel="normal"
+                    app:met_floatingLabelText="再次输入密码"
+                    app:met_iconLeft="@drawable/password"
+                    app:met_clearButton= "true"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/EmailLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/EmailEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:hint="电子邮箱"
+                    android:textSize="16dp"
+                    app:met_primaryColor="#0056d3"
+                    app:met_floatingLabel="highlight"
+                    app:met_floatingLabelText="电子邮箱"
+                    app:met_iconLeft="@drawable/email"
+                    app:met_clearButton="true"
+                    />
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/Email2Layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/Email2Edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:hint="验证码"
+                    android:maxLength="4"
+                    android:textSize="16dp"
+                    app:met_clearButton="true"
+                    app:met_floatingLabel="highlight"
+                    app:met_floatingLabelText="验证码"
+                    app:met_iconLeft="@drawable/verifycode"
+                    app:met_primaryColor="#0056d3" />
+
+                <Button
+                    android:id="@+id/yanzhengmaButton"
+                    android:layout_width="137dp"
+                    android:layout_height="64dp"
+                    android:layout_marginLeft="50dp"
+
+                    android:background="@drawable/button_blue"
+                    android:text="发送验证码"
+                    android:textColor="@color/white"
+                    android:textSize="16dp" />
+
+            </LinearLayout>
+            <!--嵌套线性布局-->
+            <LinearLayout
+                android:id="@+id/ButtonLayout"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                >
+
+                <!--立即注册按钮-->
+                <Button
+                    android:id="@+id/SignUpButton"
+                    android:layout_width="146dp"
+                    android:layout_height="70dp"
+
+                    android:layout_marginLeft="125dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/button_blue"
+                    android:padding="15dp"
+                    android:text="立即注册"
+                    android:textColor="@color/white"
+                    android:textSize="16dp" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

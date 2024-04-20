@@ -207,19 +207,12 @@ class BlueDeviceActivity : AppCompatActivity() {
 
 
     private fun startOperationThread() {
-        Thread {
-            while (true) {
-
-                bluetoothService?.getSupportedGattServices()?.forEach {service->
-                    service?.characteristics?.forEach { characteristic ->
-                        Log.d(TAG, "Performing operation...")
-                        bluetoothService?.readCharacteristic(characteristic)
-                        Thread.sleep(1000)
-                    }
-                }
-
+        bluetoothService?.getSupportedGattServices()?.forEach {service->
+            service?.characteristics?.forEach { characteristic ->
+                Log.d(TAG, "Performing operation...")
+                bluetoothService?.readCharacteristic(characteristic)
             }
-        }.start()
+        }
     }
 
 }

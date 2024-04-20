@@ -47,7 +47,6 @@ import com.example.myapplication.R
                     characteristicsString += "${characteristic.characteristicName} " +
                             "${characteristic.characteristicUUID.toString()}\n"+
                             "${characteristic.characteristicVal}\n"
-
                 }
             }
             characteristics.text = characteristicsString
