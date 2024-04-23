@@ -12,4 +12,7 @@ interface CharacteristicDao {
 
     @Query("SELECT * FROM characteristics")
     fun getAllCharacteristics(): List<Characteristic>
+
+    @Query("SELECT COUNT(*) FROM characteristics WHERE deviceAddress = :deviceAddress AND characteristicUUID = :characteristicUUID AND serviceUUID = :serviceUUID")
+    fun countCharacteristics(deviceAddress: String, characteristicUUID: String, serviceUUID: String): Int
 }

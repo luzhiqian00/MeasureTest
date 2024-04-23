@@ -1,5 +1,6 @@
 package com.example.myapplication.UI
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,9 @@ import com.example.myapplication.R
 import com.example.myapplication.ble.CharacteristicData
 import com.example.myapplication.model.characteristicModel.AppDatabase
 import com.example.myapplication.model.characteristicModel.Characteristic
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlin.concurrent.thread
 
 class CharacteristicDataAdapter : BaseAdapter(){
@@ -67,14 +71,29 @@ class CharacteristicDataAdapter : BaseAdapter(){
                         val serviceUUID = characteristic.serviceUUID
 //
                         if (deviceAddress != null && characteristicUUID != null && serviceUUID != null) {
-                            val newCharacteristic = Characteristic(
-                                deviceAddress = deviceAddress,
-                                characteristicUUID = characteristicUUID.toString(),
-                                serviceUUID = serviceUUID.toString()
-                            )
-                            thread {
-                                userDao.insert(newCharacteristic)
+                            GlobalScope.launch(Dispatchers.IO) {
+                                val count = userDao.countCharacteristics(deviceAddress!!, characteristicUUID!!.toString(), serviceUUID!!.toString())
+                                if (count == 0) {
+                                    val newCharacteristic = Characteristic(
+                                        deviceAddress = deviceAddress,
+                                        characteristicUUID = characteristicUUID.toString(),
+                                        serviceUUID = serviceUUID.toString()
+                                    )
+                                    userDao.insert(newCharacteristic)
+                                } else {
+                                    // 已存在相同的键，不执行插入操作
+                                    Log.d("KeyExists","Key has existed!")
+                                }
                             }
+
+//                            val newCharacteristic = Characteristic(
+//                                deviceAddress = deviceAddress,
+//                                characteristicUUID = characteristicUUID.toString(),
+//                                serviceUUID = serviceUUID.toString()
+//                            )
+//                            thread {
+//                                //userDao.insert(newCharacteristic)
+//                            }
 
                         }
                         true
