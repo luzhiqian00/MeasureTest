@@ -72,8 +72,15 @@
         android:fillViewport="true"
         >
 
+<!--        <ListView-->
+<!--            android:id="@+id/serviceListView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:divider="@null"-->
+<!--            android:dividerHeight="16dp" />-->
+
         <ListView
-            android:id="@+id/serviceListView"
+            android:id="@+id/characteristicListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@null"

@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
+import com.example.myapplication.UI.CharacteristicDataAdapter
 import com.example.myapplication.ble.CharacteristicData
 import com.example.myapplication.ble.MyBLEService
 import com.example.myapplication.ble.ServiceData
@@ -30,15 +31,20 @@ class BlueDeviceActivity : AppCompatActivity() {
     private val deviceName by lazy { binding.deviceNameTextView }
     private val deviceAddress by lazy { binding.deviceAddressTextView }
     private val connectedText by lazy { binding.connected }
-    private val serviceListView by lazy {binding.serviceListView}
+    //private val serviceListView by lazy {binding.serviceListView}
     private val serviceDataAdapter by lazy { ServiceDataAdapter() }
 
+    private val characteristicListView by lazy { binding.characteristicListView }
+    private val characteristicDataAdapter by lazy { CharacteristicDataAdapter() }
+
+
+
     private var bluetoothService: MyBLEService? = null
-    private var mGattCharacteristics = ArrayList<ArrayList<BluetoothGattCharacteristic>>()
+
     private val LIST_NAME = "NAME"
     private val LIST_UUID = "UUID"
     private var mServices = ArrayList<ServiceData>()
-
+    private var mCharacteristics = ArrayList<CharacteristicData>()
 
     // 管理service的生命周期,不用管，重写了一些必要的方法而已
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
@@ -76,7 +82,9 @@ class BlueDeviceActivity : AppCompatActivity() {
         connectedText.text ="Disconnected"
         BLEaddress = bluetoothDevice?.address
 
-        serviceListView.adapter = serviceDataAdapter
+        //serviceListView.adapter = serviceDataAdapter
+
+        characteristicListView.adapter = characteristicDataAdapter
         connectionButton.setOnClickListener {
             val gattServiceIntent = Intent(this, MyBLEService::class.java)
             bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
@@ -111,8 +119,10 @@ class BlueDeviceActivity : AppCompatActivity() {
                 MyBLEService.ACTION_GATT_SERVICES_DISCOVERED -> {
                     // Show all the supported services and characteristics on the user interface.
                     Log.d(TAG,"ACTION_GATT_SERVICES_DISCOVERED")
-                    displayGattServices(bluetoothService?.getSupportedGattServices() as List<BluetoothGattService>?)
-                    startOperationThread()
+                    //displayGattServices(bluetoothService?.getSupportedGattServices() as List<BluetoothGattService>?)
+                    displayGattCharacteristics(bluetoothService?.getSupportedGattServices() as List<BluetoothGattService>?)
+
+                //startOperationThread()
                 }
                 MyBLEService.ACTION_DATA_AVAILABLE -> {
                     Log.d(TAG,"characteristic data read successfully")
@@ -133,13 +143,21 @@ class BlueDeviceActivity : AppCompatActivity() {
 
     //uuid和value
     private fun updateCharacteristics(uuid:UUID,characteristicVal:String) {
-        for(serviceItem in mServices){
-            for (characterisicItem in serviceItem.characteristics){
-                if (uuid == characterisicItem.characteristicUUID){
-                    characterisicItem.characteristicVal = characteristicVal
-                    serviceDataAdapter.notifyDataSetChanged()
-                    return
-                }
+//        for(serviceItem in mServices){
+//            for (characterisicItem in serviceItem.characteristics){
+//                if (uuid == characterisicItem.characteristicUUID){
+//                    characterisicItem.characteristicVal = characteristicVal
+//                    serviceDataAdapter.notifyDataSetChanged()
+//                    return
+//                }
+//            }
+//        }
+
+        for (characterisicItem in mCharacteristics){
+            if (uuid == characterisicItem.characteristicUUID){
+                characterisicItem.characteristicVal = characteristicVal
+                characteristicDataAdapter.notifyDataSetChanged()
+                return
             }
         }
 
@@ -169,6 +187,26 @@ class BlueDeviceActivity : AppCompatActivity() {
         serviceDataAdapter.notifyDataSetChanged()
     }
 
+    private fun displayGattCharacteristics(gattServices: List<BluetoothGattService>?) {
+        gattServices?.let {
+
+            for ((index1,service) in gattServices.withIndex()) {
+                val serviceUuid = service.uuid
+                val characteristics = service.characteristics
+
+                for ((index, characteristic) in characteristics.withIndex()) {
+                    val characteristicUuid = characteristic.uuid
+                    val characteristicData = CharacteristicData(BLEaddress,serviceUuid,"Characteristic $characteristicUuid", characteristicUuid)
+                    // 为 characteristicData 设置名称，格式为 "Characteristic 0", "Characteristic 1", 等等
+                    mCharacteristics.add(characteristicData)
+                }
+            }
+        }
+
+        Log.d(TAG,"discover successfully")
+        characteristicDataAdapter.setCharacteristicList(mCharacteristics)
+        characteristicDataAdapter.notifyDataSetChanged()
+    }
 
     override fun onResume() {
         super.onResume()

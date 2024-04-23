@@ -20,6 +20,8 @@ class ServiceData() {
 }
 
 class CharacteristicData() {
+    var bleAddress:String? =null
+    var serviceUUID:UUID? =null
     var characteristicName: String? = null
     var characteristicUUID: UUID? = null
     var characteristicVal: String? = null
@@ -31,9 +33,24 @@ class CharacteristicData() {
     }
 
     constructor(characteristicName: String?, characteristicUUID: UUID) : this() {
+        this.bleAddress = "NULL"
         this.characteristicName = characteristicName
         this.characteristicUUID = characteristicUUID
         this.characteristicVal = "NULL"
     }
 
+    constructor(serviceUUID: UUID?,characteristicName: String?, characteristicUUID: UUID) : this() {
+        this.serviceUUID = serviceUUID
+        this.characteristicName = characteristicName
+        this.characteristicUUID = characteristicUUID
+        this.characteristicVal = "NULL"
+    }
+
+    constructor(deviceAddress:String?, serviceUUID: UUID?,characteristicName: String?, characteristicUUID: UUID) : this() {
+        this.bleAddress = deviceAddress
+        this.serviceUUID = serviceUUID
+        this.characteristicName = characteristicName
+        this.characteristicUUID = characteristicUUID
+        this.characteristicVal = "NULL"
+    }
 }

@@ -1,0 +1,48 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "20c79cdb174a420e1f7b8d3d0824f7c1",
+    "entities": [
+      {
+        "tableName": "characteristics",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`deviceAddress` TEXT NOT NULL, `characteristicUUID` TEXT NOT NULL, `serviceUUID` TEXT NOT NULL, PRIMARY KEY(`deviceAddress`, `characteristicUUID`, `serviceUUID`))",
+        "fields": [
+          {
+            "fieldPath": "deviceAddress",
+            "columnName": "deviceAddress",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "characteristicUUID",
+            "columnName": "characteristicUUID",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "serviceUUID",
+            "columnName": "serviceUUID",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "deviceAddress",
+            "characteristicUUID",
+            "serviceUUID"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '20c79cdb174a420e1f7b8d3d0824f7c1')"
+    ]
+  }
+}

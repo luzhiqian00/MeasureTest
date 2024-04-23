@@ -17,21 +17,29 @@ class MainActivity : AppCompatActivity() {
 
     // 使用懒加载初始化绑定视图
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private val measureButton by lazy { binding.MeasureButton }
+    private val characteristicHistoryButton by lazy { binding.CharacteristicHistoryButton }
+    private val historyButton by lazy{binding.HistoryButton}
+    private val profileButton by lazy{binding.ProfileButton}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        // 获取 MeasureButton 按钮的实例
-        val button = binding.MeasureButton
         // 动态申请权限
         setPermissionX()
 
         // 设置按钮点击事件监听器
-        button.setOnClickListener{
+        measureButton.setOnClickListener{
             val intent = Intent(this,ScanActivity::class.java)
             startActivity(intent)
         }
+
+        characteristicHistoryButton.setOnClickListener{
+            val intent = Intent(this,DeviceHistoryActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
     /**

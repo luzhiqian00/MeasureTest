@@ -1,0 +1,48 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_weight="1">
+
+    <TextView
+        android:id="@+id/bleAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BleAddress"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/serviceUUIDTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ServiceUUID"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/characteristicNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Characteristic Name"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/characteristicUUIDTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Characteristic UUID"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp" /> <!-- Add margin between TextViews -->
+
+    <TextView
+        android:id="@+id/characteristicValue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Characteristic Value"
+        android:textSize="16sp"
+        />
+</LinearLayout>
