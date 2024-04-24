@@ -86,15 +86,6 @@ class CharacteristicDataAdapter : BaseAdapter(){
                                 }
                             }
 
-//                            val newCharacteristic = Characteristic(
-//                                deviceAddress = deviceAddress,
-//                                characteristicUUID = characteristicUUID.toString(),
-//                                serviceUUID = serviceUUID.toString()
-//                            )
-//                            thread {
-//                                //userDao.insert(newCharacteristic)
-//                            }
-
                         }
                         true
                     }

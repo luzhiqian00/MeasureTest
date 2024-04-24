@@ -1,11 +1,14 @@
 package com.example.myapplication.UI
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.PopupMenu
 import android.widget.TextView
+import com.example.myapplication.BlueDeviceActivity
+import com.example.myapplication.CharacteristicActivity
 import com.example.myapplication.MeasureApplication
 import com.example.myapplication.R
 import com.example.myapplication.ble.CharacteristicData
@@ -49,7 +52,15 @@ class DeviceHistoryAdapter : BaseAdapter(){
         characteristicUUIDTextView.text = "CharacteristicUUID:  "+characteristic.characteristicUUID ?: "Unknown Characteristic UUID"
         characteristicNameTextView.text = "特征默认名"
         characteristicValueTextView.text = "NULL"
-
+        view.setOnClickListener{
+            val intent = Intent(convertView?.context, CharacteristicActivity::class.java)
+            // Add any extra data if needed
+            intent.putExtra("deviceAddress", characteristic.deviceAddress)
+            intent.putExtra("characteristicUUID", characteristic.characteristicUUID)
+            intent.putExtra("serviceUUID", characteristic.serviceUUID)
+            // Start the activity
+            convertView?.context?.startActivity(intent)
+        }
         return view
     }
 
