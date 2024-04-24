@@ -1,14 +1,21 @@
 package com.example.myapplication
 
-import android.bluetooth.BluetoothGattService
 import android.content.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
+import android.widget.Toast
+import com.example.loginlibrary.secure.SecureStorage
 import com.example.myapplication.ble.MyBLEService
 import com.example.myapplication.databinding.ActivityCharacteristicBinding
+import com.example.myapplication.model.AppDatabase
 import com.example.myapplication.model.characteristicModel.Characteristic
+import com.example.myapplication.model.dataPointModel.DataPoint
+import com.example.myapplication.model.measureResultModel.Measurement
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 
 class CharacteristicActivity : AppCompatActivity() {
@@ -23,10 +30,15 @@ class CharacteristicActivity : AppCompatActivity() {
     private val connectedText by lazy { binding.connected }
     private val connectButton by lazy { binding.connectButton }
     private val disconnectButton by lazy { binding.disconnectButton }
-    private val characteristicValue by lazy { binding.characteristicValueTextView }
+    private val characteristicValueView by lazy { binding.characteristicValueTextView }
+    private val characteristicUUIDTextView by lazy{binding.characteristicUUIDTextView}
+    private val serviceUUIDTextView by lazy{binding.serviceUUIDTextView}
+    private val deviceAddressTextView by lazy{binding.deviceAddressTextView}
+
     private var bluetoothService: MyBLEService? = null
 
-
+    private val storeManyButton by lazy { binding.storeManyButton }
+    private val storeOneButton by lazy { binding.storeOneButton }
 
     private var mCharacteristic : Characteristic? =null
     private var BLEaddress:String ? =null
@@ -38,23 +50,47 @@ class CharacteristicActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        SecureStorage.init(this)
+        // 检查是否存在记住的凭据
+        val storedUserEmail = SecureStorage.decrypt("userEmailKey")
+
         // 获取Intent中的额外数据
         BLEaddress = intent.getStringExtra("deviceAddress")
         characteristicUUID = intent.getStringExtra("characteristicUUID")
         serviceUUID = intent.getStringExtra("serviceUUID")
 
+
+        deviceAddressTextView.text = BLEaddress
+        serviceUUIDTextView.text = serviceUUID
+        characteristicUUIDTextView.text = characteristicUUID
+
+
         connectButton.setOnClickListener {
             val gattServiceIntent = Intent(this, MyBLEService::class.java)
             bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
-            Log.d(CharacteristicActivity.TAG,"try to connect")
+            Log.d(TAG,"try to connect")
 
         }
 
         disconnectButton.setOnClickListener {
             if (connected) {
                 unbindService(serviceConnection)
-                Log.d(CharacteristicActivity.TAG, "try to disconnect")
+                Log.d(TAG, "try to disconnect")
             }
+        }
+
+        storeOneButton.setOnClickListener{
+            if(connected){
+                GlobalScope.launch(Dispatchers.IO){
+                    saveMeasurementAndDataPoints(storedUserEmail,characteristicValueView.text.toString())
+                }
+            }else{
+                Toast.makeText(this,"设备未连接，不能记录数据",Toast.LENGTH_LONG)
+            }
+        }
+
+        storeManyButton.setOnClickListener {
+
         }
 
     }
@@ -103,7 +139,6 @@ class CharacteristicActivity : AppCompatActivity() {
                     //displayGattServices(bluetoothService?.getSupportedGattServices() as List<BluetoothGattService>?)
                     //displayGattCharacteristics(bluetoothService?.getSupportedGattServices() as List<BluetoothGattService>?)
 
-                    //startOperationThread()
                 }
                 MyBLEService.ACTION_DATA_AVAILABLE -> {
                     Log.d(CharacteristicActivity.TAG,"characteristic data read successfully")
@@ -125,8 +160,8 @@ class CharacteristicActivity : AppCompatActivity() {
 
     private fun updateCharacteristics(uuid:UUID,characteristicVal:String) {
             if (uuid.toString() == characteristicUUID){
-                characteristicValue.text = characteristicVal
-                characteristicValue.postInvalidate()
+                characteristicValueView.text = characteristicVal
+                characteristicValueView.postInvalidate()
                 return
             }
     }
@@ -166,6 +201,37 @@ class CharacteristicActivity : AppCompatActivity() {
         Log.d(CharacteristicActivity.TAG, "unbindService called")
     }
 
+    private fun saveMeasurementAndDataPoints(userEmail: String, value: String, description: String = "Optional description") {
+        val db = AppDatabase.getDatabase(MeasureApplication.context)
+        val measurementDao = db.measurementDao()
+        val dataPointDao = db.dataPointDao()
+
+        // 创建 Measurement 实体
+        val measurement = Measurement().apply {
+            this.userEmail = userEmail
+            this.timestamp = System.currentTimeMillis()
+            this.description = description
+        }
+
+        // 插入 Measurement 实体并获取 ID
+        val measurementId = measurementDao?.insertMeasurement(measurement)
+        if (measurementId!=null){
+            Log.d(TAG,"成功存入了measures表")
+        }else{
+            Log.d(TAG,"无法成功插入measures表，不执行后续操作")
+        }
+        // 创建 DataPoint 实体
+        val dataPoint = DataPoint(
+            measurementId = measurementId!!, // 确保类型匹配
+            value = value
+        )
+
+        // 插入 DataPoint 实体
+        val dataPointId = dataPointDao?.insertDataPoint(dataPoint)
+        if (dataPointId!=null){
+            Log.d(TAG,"dataPoint表插入成功!")
+        }
+    }
 
 
 }

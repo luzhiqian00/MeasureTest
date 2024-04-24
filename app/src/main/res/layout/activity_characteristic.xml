@@ -30,12 +30,37 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/storeOneButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="28dp"
+        android:text="保存单条数据"
+        app:layout_constraintBottom_toTopOf="@+id/connected"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/connectButton"
+        app:layout_constraintVertical_bias="0.625" />
+
+    <Button
+        android:id="@+id/storeManyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:text="保存多条数据"
+        app:layout_constraintBottom_toTopOf="@+id/connected"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.74"
+        app:layout_constraintStart_toEndOf="@+id/storeOneButton"
+        app:layout_constraintTop_toBottomOf="@+id/disconnectButton"
+        app:layout_constraintVertical_bias="0.625" />
+
     <TextView
         android:id="@+id/connected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="300dp"
-        android:text="Connected"
+        android:text="Disconnected"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
@@ -49,8 +74,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="40dp"
-        android:text="Characteristic UUID"
-        android:textSize="20sp"
+        android:text="Service UUID"
+        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -58,10 +83,10 @@
         android:id="@+id/characteristicUUIDTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="76dp"
-        android:text="Service UUID"
-        android:textSize="20sp"
+        android:text="Characteristic UUID"
+        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -70,11 +95,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="28dp"
         android:text="Device Address"
-        android:textSize="20sp"
+        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/deviceNameTextView" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/characteristicValueTextView"
@@ -95,7 +119,7 @@
         >
 
         <ListView
-            android:id="@+id/characteristicListView"
+            android:id="@+id/characteristicValueListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@null"

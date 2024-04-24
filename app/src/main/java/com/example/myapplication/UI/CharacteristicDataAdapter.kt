@@ -10,12 +10,11 @@ import android.widget.TextView
 import com.example.myapplication.MeasureApplication
 import com.example.myapplication.R
 import com.example.myapplication.ble.CharacteristicData
-import com.example.myapplication.model.characteristicModel.AppDatabase
+import com.example.myapplication.model.AppDatabase
 import com.example.myapplication.model.characteristicModel.Characteristic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlin.concurrent.thread
 
 class CharacteristicDataAdapter : BaseAdapter(){
     private val characteristicList = ArrayList<CharacteristicData>()

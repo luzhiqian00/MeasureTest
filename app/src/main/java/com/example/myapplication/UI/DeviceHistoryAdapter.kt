@@ -5,14 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.PopupMenu
 import android.widget.TextView
-import com.example.myapplication.BlueDeviceActivity
 import com.example.myapplication.CharacteristicActivity
-import com.example.myapplication.MeasureApplication
 import com.example.myapplication.R
-import com.example.myapplication.ble.CharacteristicData
-import com.example.myapplication.model.characteristicModel.AppDatabase
 import com.example.myapplication.model.characteristicModel.Characteristic
 
 class DeviceHistoryAdapter : BaseAdapter(){
