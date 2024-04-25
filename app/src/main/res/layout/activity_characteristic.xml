@@ -55,18 +55,18 @@
         app:layout_constraintTop_toBottomOf="@+id/disconnectButton"
         app:layout_constraintVertical_bias="0.625" />
 
+
     <TextView
         android:id="@+id/connected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="300dp"
+        android:layout_marginTop="268dp"
         android:text="Disconnected"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintHorizontal_bias="0.468"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <TextView
         android:id="@+id/serviceUUIDTextView"
@@ -110,21 +110,32 @@
         app:layout_constraintStart_toEndOf="@+id/connectButton"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ScrollView
+
+
+    <LinearLayout
+        android:id="@+id/listContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/connected"
-        android:fillViewport="true"
-        >
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:id="@+id/storeDataHiddenButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="保存数据" />
 
         <ListView
-            android:id="@+id/characteristicValueListView"
+            android:id="@+id/characteristicInTimeListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@null"
             android:dividerHeight="16dp" />
-    </ScrollView>
+
+    </LinearLayout>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

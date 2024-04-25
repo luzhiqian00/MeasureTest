@@ -5,8 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
+import android.view.View
+import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.example.loginlibrary.secure.SecureStorage
+import com.example.myapplication.UI.CharacteristicActivityAdapter
 import com.example.myapplication.ble.MyBLEService
 import com.example.myapplication.databinding.ActivityCharacteristicBinding
 import com.example.myapplication.model.AppDatabase
@@ -17,6 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.ArrayList
 
 class CharacteristicActivity : AppCompatActivity() {
 
@@ -39,11 +44,21 @@ class CharacteristicActivity : AppCompatActivity() {
 
     private val storeManyButton by lazy { binding.storeManyButton }
     private val storeOneButton by lazy { binding.storeOneButton }
+    private val storeDataHiddenButton by lazy { binding.storeDataHiddenButton }
+
+    private val characteristicInTimeListView by lazy{binding.characteristicInTimeListView}
+    private var mAdapter:CharacteristicActivityAdapter? = null
+    private var valueList:ArrayList<String>? =null
+
+    private var isGattUpdateReceiverRegistered = false
+    private var isServiceConnected = false
+    private var recordAllowed = false
 
     private var mCharacteristic : Characteristic? =null
     private var BLEaddress:String ? =null
     private var characteristicUUID:String?=null
     private var serviceUUID:String? =null
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,10 +79,13 @@ class CharacteristicActivity : AppCompatActivity() {
         serviceUUIDTextView.text = serviceUUID
         characteristicUUIDTextView.text = characteristicUUID
 
+        storeDataHiddenButton.visibility = View.INVISIBLE
+        storeDataHiddenButton.isEnabled = false
 
         connectButton.setOnClickListener {
             val gattServiceIntent = Intent(this, MyBLEService::class.java)
             bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+            isServiceConnected = true
             Log.d(TAG,"try to connect")
 
         }
@@ -75,21 +93,70 @@ class CharacteristicActivity : AppCompatActivity() {
         disconnectButton.setOnClickListener {
             if (connected) {
                 unbindService(serviceConnection)
+                isServiceConnected = false
                 Log.d(TAG, "try to disconnect")
             }
         }
 
         storeOneButton.setOnClickListener{
             if(connected){
-                GlobalScope.launch(Dispatchers.IO){
-                    saveMeasurementAndDataPoints(storedUserEmail,characteristicValueView.text.toString())
+                showInputDialog { enteredText ->
+                    if (enteredText != null) {
+                        // 用户输入了文本，可以在这里处理
+                        GlobalScope.launch(Dispatchers.IO){
+                            saveMeasurementAndDataPoint(storedUserEmail,characteristicValueView.text.toString(),enteredText)
+                        }
+                        Toast.makeText(this, "Entered text: $enteredText", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // 用户取消了输入
+                        Toast.makeText(this, "Input canceled", Toast.LENGTH_SHORT).show()
+                    }
                 }
+
             }else{
                 Toast.makeText(this,"设备未连接，不能记录数据",Toast.LENGTH_LONG)
             }
         }
 
         storeManyButton.setOnClickListener {
+            if(!recordAllowed){
+                valueList = ArrayList<String>()
+                mAdapter =CharacteristicActivityAdapter(this,valueList!!)
+                characteristicInTimeListView.adapter =mAdapter
+                recordAllowed = true
+            }
+
+            if(connected){
+                storeDataHiddenButton.visibility = View.VISIBLE
+                storeDataHiddenButton.isEnabled = true
+            }
+        }
+
+        storeDataHiddenButton.setOnClickListener {
+
+            val valuesToStore = mAdapter?.getCheckedItems()
+            if (!valuesToStore.isNullOrEmpty()) {
+                showInputDialog { enteredText ->
+                    if (enteredText != null) {
+                        // 用户输入了文本，可以在这里处理
+                        GlobalScope.launch(Dispatchers.IO){
+                            saveMeasurementAndDataPoints(storedUserEmail,valuesToStore,enteredText)
+                        }
+                        Toast.makeText(this, "Entered text: $enteredText", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // 用户取消了输入
+                        Toast.makeText(this, "Input canceled", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+            }else{
+                Toast.makeText(this, "No data to store", Toast.LENGTH_SHORT).show()
+            }
+            storeDataHiddenButton.visibility = View.INVISIBLE
+            storeDataHiddenButton.isEnabled = false
+            recordAllowed = false
+            valueList!!.clear()
+            mAdapter!!.notifyDataSetChanged()
 
         }
 
@@ -162,21 +229,28 @@ class CharacteristicActivity : AppCompatActivity() {
             if (uuid.toString() == characteristicUUID){
                 characteristicValueView.text = characteristicVal
                 characteristicValueView.postInvalidate()
-                return
             }
+        if(recordAllowed){
+            valueList!!.add(characteristicVal)
+            mAdapter!!.notifyDataSetChanged()
+        }
     }
 
     override fun onPause() {
         super.onPause()
-        unregisterReceiver(gattUpdateReceiver)
+        if (isGattUpdateReceiverRegistered) {
+            unregisterReceiver(gattUpdateReceiver)
+            isGattUpdateReceiverRegistered = false
+        }
     }
 
     override fun onResume() {
         super.onResume()
         registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
+        isGattUpdateReceiverRegistered = true
         if (bluetoothService != null) {
             val result = bluetoothService!!.connect(BLEaddress!!)
-            Log.d(CharacteristicActivity.TAG, "Connect request result=$result")
+            Log.d(TAG, "Connect request result=$result")
         }
     }
 
@@ -192,16 +266,22 @@ class CharacteristicActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        unregisterReceiver(gattUpdateReceiver)
+        if (isGattUpdateReceiverRegistered) {
+            unregisterReceiver(gattUpdateReceiver)
+            isGattUpdateReceiverRegistered = false
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        unbindService(serviceConnection)
-        Log.d(CharacteristicActivity.TAG, "unbindService called")
+        if(isServiceConnected){
+            unbindService(serviceConnection)
+            isServiceConnected = false
+            Log.d(TAG, "unbindService called")
+        }
     }
 
-    private fun saveMeasurementAndDataPoints(userEmail: String, value: String, description: String = "Optional description") {
+    private fun saveMeasurementAndDataPoint(userEmail: String, value: String, description: String = "Optional description") {
         val db = AppDatabase.getDatabase(MeasureApplication.context)
         val measurementDao = db.measurementDao()
         val dataPointDao = db.dataPointDao()
@@ -231,6 +311,62 @@ class CharacteristicActivity : AppCompatActivity() {
         if (dataPointId!=null){
             Log.d(TAG,"dataPoint表插入成功!")
         }
+    }
+
+    private fun saveMeasurementAndDataPoints(userEmail: String, values: List<String>, description: String = "Optional description") {
+        val db = AppDatabase.getDatabase(MeasureApplication.context)
+        val measurementDao = db.measurementDao()
+        val dataPointDao = db.dataPointDao()
+
+        // 创建 Measurement 实体
+        val measurement = Measurement().apply {
+            this.userEmail = userEmail
+            this.timestamp = System.currentTimeMillis()
+            this.description = description
+        }
+
+        // 插入 Measurement 实体并获取 ID
+        val measurementId = measurementDao?.insertMeasurement(measurement)
+        if (measurementId != null) {
+            Log.d(TAG, "Successfully inserted into measures table")
+        } else {
+            Log.d(TAG, "Failed to insert into measures table, skipping further operations")
+            return
+        }
+
+        // 创建 DataPoint 实体列表
+        values.map { value ->
+            val dataPoint = DataPoint(
+                measurementId = measurementId,
+                value = value
+            )
+            dataPointDao?.insertDataPoint(dataPoint)
+        }
+
+    }
+
+
+    private fun showInputDialog(callback: (String?) -> Unit) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("输入测量值的名称")
+
+        val input = EditText(this)
+        builder.setView(input)
+
+        builder.setPositiveButton("OK") { dialog, which ->
+            val enteredText = input.text.toString()
+            // 在这里处理用户输入的文本
+            callback.invoke(enteredText)
+            dialog.dismiss()
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, which ->
+            callback.invoke(null)
+            dialog.cancel()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
     }
 
 

@@ -18,7 +18,7 @@ import com.example.myapplication.model.measureResultModel.Measurement
 
 data class DataPoint(
     @PrimaryKey(autoGenerate = true)
-    var dataPointId: Int = 0,
+    var dataPointId: Long = 0,
 
     @ColumnInfo(name = "measurementId")
     var measurementId: Long,

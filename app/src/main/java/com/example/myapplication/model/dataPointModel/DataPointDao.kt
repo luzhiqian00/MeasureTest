@@ -11,5 +11,5 @@ interface DataPointDao {
     fun insertDataPoint(dataPoint: DataPoint?):Long
 
     @Query("SELECT * FROM data_points WHERE measurementId = :measurementId")
-    fun getDataPointsForMeasurement(measurementId: Int): List<DataPoint?>?
+    fun getDataPointsForMeasurement(measurementId: Long): List<DataPoint?>?
 }

@@ -1,15 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.loginlibrary">
 
-    <application
-        android:networkSecurityConfig="@xml/network_security_config">
-
+    <application android:networkSecurityConfig="@xml/network_security_config">
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="true" />
         <activity
             android:name=".LoginActivity"
             android:exported="true" />
-        <activity android:name=".login.SignUpActivity"
-            android:exported="true"/>
+        <activity
+            android:name=".login.SignUpActivity"
+            android:exported="true" />
     </application>
+
     <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

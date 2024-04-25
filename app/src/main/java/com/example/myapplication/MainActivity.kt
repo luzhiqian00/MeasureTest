@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import com.example.loginlibrary.ProfileActivity
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.permissionx.guolindev.PermissionX
 
@@ -40,6 +41,15 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        historyButton.setOnClickListener {
+            val intent = Intent(this,CharacteristicsHistoryActivity::class.java)
+            startActivity(intent)
+        }
+
+        profileButton.setOnClickListener {
+            val intent =Intent(this,ProfileActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     /**

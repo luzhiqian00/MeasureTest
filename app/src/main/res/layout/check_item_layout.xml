@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- check_item_layout.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp">
+
+    <!-- 左侧测量数值的 TextView -->
+    <TextView
+        android:id="@+id/measurementValTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:gravity="start"
+        android:text="测量数值"/>
+
+    <!-- 右侧选中标记，这里使用 CheckBox，你也可以替换为其他控件 -->
+    <CheckBox
+        android:id="@+id/selectionCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="end"/>
+
+</LinearLayout>

@@ -12,7 +12,7 @@ import androidx.room.PrimaryKey
 )
 class Measurement {
     @PrimaryKey(autoGenerate = true)
-    var measurementId  = 0
+    var measurementId:Long  = 0
 
     @ColumnInfo(name = "userEmail")
     var userEmail :String?=null

@@ -50,7 +50,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity android:name="com.example.loginlibrary.ProfileActivity"
+            android:exported="true">
+        </activity>
         <service
             android:name=".ble.MyBLEService"
             android:enabled="true"
