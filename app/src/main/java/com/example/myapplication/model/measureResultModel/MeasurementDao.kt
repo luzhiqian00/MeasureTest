@@ -12,4 +12,14 @@ interface MeasurementDao {
 
     @Query("SELECT * FROM measurements WHERE userEmail = :userEmail")
     fun getMeasurementsForUser(userEmail: String): List<Measurement?>?
+
+    @Query("DELETE FROM measurements WHERE userEmail = :userEmail")
+    fun deleteMeasurementsForUser(userEmail: String): Int
+
+    @Query("DELETE FROM measurements WHERE measurementId = :measurementId")
+    fun deleteMeasurementById(measurementId: Long): Int
+
+    @Query("DELETE FROM measurements WHERE measurementId IN (:measurementIds)")
+    fun deleteMeasurementsByIds(measurementIds: List<Long>): Int
+
 }

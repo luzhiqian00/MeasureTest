@@ -118,7 +118,7 @@
         android:layout_height="fill_parent">
 
         <Button
-            android:id="@+id/exitlogin"
+            android:id="@+id/exitLoginButton"
             android:layout_width="168dp"
             android:layout_height="80dp"
             android:layout_gravity="bottom"

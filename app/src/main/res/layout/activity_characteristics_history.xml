@@ -5,8 +5,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".CharacteristicsHistoryActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/characteristicHistoryToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="测量数据历史记录"
+        android:background="@color/purple_500"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/actionButton"
+        android:background="@color/button_blue"
+        android:text="执行"
+        android:visibility="gone"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/outerRecyclerView"

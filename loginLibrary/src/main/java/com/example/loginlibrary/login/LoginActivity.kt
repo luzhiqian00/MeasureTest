@@ -40,8 +40,6 @@ class LoginActivity : AppCompatActivity() {
         }
 
 
-
-
         setContentView(binding.root)
         loginButton.setOnClickListener{
             val userEmail = UserEmailEdit.text.toString()

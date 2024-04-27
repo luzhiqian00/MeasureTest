@@ -4,7 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/MyApplication/app/src/main/res/layout/activity_characteristic.xml" value="0.23052536231884058" />
-        <entry key="..\:/MyApplication/app/src/main/res/layout/activity_characteristics_history.xml" value="0.24947916666666667" />
+        <entry key="..\:/MyApplication/app/src/main/res/layout/activity_characteristics_history.xml" value="0.1" />
         <entry key="..\:/MyApplication/app/src/main/res/layout/activity_chravteristics.xml" value="0.19384057971014493" />
         <entry key="..\:/MyApplication/app/src/main/res/layout/activity_device.xml" value="0.264" />
         <entry key="..\:/MyApplication/app/src/main/res/layout/activity_device_history.xml" value="0.23385416666666667" />
@@ -22,9 +22,12 @@
         <entry key="..\:/MyApplication/app/src/main/res/layout/characteristicitem_popup_menu.xml" value="0.14322916666666666" />
         <entry key="..\:/MyApplication/app/src/main/res/layout/check_item_layout.xml" value="0.21927083333333333" />
         <entry key="..\:/MyApplication/app/src/main/res/layout/fragment_characteristic.xml" value="0.1" />
+        <entry key="..\:/MyApplication/app/src/main/res/layout/history_action_menu.xml" value="0.16077898550724637" />
         <entry key="..\:/MyApplication/app/src/main/res/layout/inner_item_layout.xml" value="0.23489583333333333" />
         <entry key="..\:/MyApplication/app/src/main/res/layout/inner_recyclerview_item_layout.xml" value="0.23489583333333333" />
         <entry key="..\:/MyApplication/app/src/main/res/layout/outer_item_layout.xml" value="0.23489583333333333" />
+        <entry key="..\:/MyApplication/app/src/main/res/menu/characteristicitem_popup_menu.xml" value="0.24947916666666667" />
+        <entry key="..\:/MyApplication/app/src/main/res/menu/history_action_menu.xml" value="0.24947916666666667" />
         <entry key="..\:/MyApplication/loginLibrary/src/main/res/drawable/item_setting.xml" value="0.151" />
         <entry key="..\:/MyApplication/loginLibrary/src/main/res/layout/activity_login.xml" value="0.264" />
         <entry key="..\:/MyApplication/loginLibrary/src/main/res/layout/activity_profile.xml" value="0.24947916666666667" />
