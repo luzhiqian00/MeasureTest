@@ -294,8 +294,9 @@ class CharacteristicActivity : AppCompatActivity() {
         }
 
         // 插入 Measurement 实体并获取 ID
-        val measurementId = measurementDao?.insertMeasurement(measurement)
-        if (measurementId!=null){
+        measurementDao?.insertMeasurement(measurement)
+        val measurementId =measurement.measurementId
+            if (measurementId!=null){
             Log.d(TAG,"成功存入了measures表")
         }else{
             Log.d(TAG,"无法成功插入measures表，不执行后续操作")
@@ -303,7 +304,8 @@ class CharacteristicActivity : AppCompatActivity() {
         // 创建 DataPoint 实体
         val dataPoint = DataPoint(
             measurementId = measurementId!!, // 确保类型匹配
-            value = value
+            value = value,
+            userEmail = userEmail
         )
 
         // 插入 DataPoint 实体
@@ -326,7 +328,8 @@ class CharacteristicActivity : AppCompatActivity() {
         }
 
         // 插入 Measurement 实体并获取 ID
-        val measurementId = measurementDao?.insertMeasurement(measurement)
+        measurementDao?.insertMeasurement(measurement)
+        val measurementId =measurement.measurementId
         if (measurementId != null) {
             Log.d(TAG, "Successfully inserted into measures table")
         } else {
@@ -338,7 +341,8 @@ class CharacteristicActivity : AppCompatActivity() {
         values.map { value ->
             val dataPoint = DataPoint(
                 measurementId = measurementId,
-                value = value
+                value = value,
+                userEmail = userEmail
             )
             dataPointDao?.insertDataPoint(dataPoint)
         }

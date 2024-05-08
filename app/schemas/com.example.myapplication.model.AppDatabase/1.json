@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c5f7c773d7f6f7c25f6de3376bc2a35a",
+    "identityHash": "48976863fb4e0c29fc8b7bc369a2fc25",
     "entities": [
       {
         "tableName": "characteristics",
@@ -40,19 +40,19 @@
       },
       {
         "tableName": "measurements",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`measurementId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `userEmail` TEXT, `timestamp` INTEGER NOT NULL, `description` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`measurementId` TEXT NOT NULL, `userEmail` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, `description` TEXT, PRIMARY KEY(`measurementId`, `userEmail`))",
         "fields": [
           {
             "fieldPath": "measurementId",
             "columnName": "measurementId",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "userEmail",
             "columnName": "userEmail",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "timestamp",
@@ -69,16 +69,17 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "measurementId"
+            "measurementId",
+            "userEmail"
           ],
-          "autoGenerate": true
+          "autoGenerate": false
         },
         "indices": [],
         "foreignKeys": []
       },
       {
         "tableName": "data_points",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dataPointId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `measurementId` INTEGER NOT NULL, `value` TEXT NOT NULL, FOREIGN KEY(`measurementId`) REFERENCES `measurements`(`measurementId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dataPointId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `measurementId` TEXT NOT NULL, `userEmail` TEXT NOT NULL, `value` TEXT NOT NULL, FOREIGN KEY(`measurementId`, `userEmail`) REFERENCES `measurements`(`measurementId`, `userEmail`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "dataPointId",
@@ -89,7 +90,13 @@
           {
             "fieldPath": "measurementId",
             "columnName": "measurementId",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userEmail",
+            "columnName": "userEmail",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -107,12 +114,13 @@
         },
         "indices": [
           {
-            "name": "index_data_points_measurementId",
+            "name": "index_data_points_measurementId_userEmail",
             "unique": false,
             "columnNames": [
-              "measurementId"
+              "measurementId",
+              "userEmail"
             ],
-            "createSql": "CREATE  INDEX `index_data_points_measurementId` ON `${TABLE_NAME}` (`measurementId`)"
+            "createSql": "CREATE  INDEX `index_data_points_measurementId_userEmail` ON `${TABLE_NAME}` (`measurementId`, `userEmail`)"
           }
         ],
         "foreignKeys": [
@@ -121,10 +129,12 @@
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "measurementId"
+              "measurementId",
+              "userEmail"
             ],
             "referencedColumns": [
-              "measurementId"
+              "measurementId",
+              "userEmail"
             ]
           }
         ]
@@ -133,7 +143,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c5f7c773d7f6f7c25f6de3376bc2a35a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '48976863fb4e0c29fc8b7bc369a2fc25')"
     ]
   }
 }

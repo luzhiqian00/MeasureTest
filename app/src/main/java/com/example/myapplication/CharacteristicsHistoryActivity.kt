@@ -13,7 +13,11 @@ import com.example.myapplication.databinding.ActivityCharacteristicsHistoryBindi
 import com.example.myapplication.model.AppDatabase
 import com.example.myapplication.model.MeasurementData
 import com.example.myapplication.model.dataPointModel.DataPoint
+import com.google.gson.Gson
 import kotlinx.coroutines.*
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import java.io.IOException
 
 
 class CharacteristicsHistoryActivity : AppCompatActivity() {
@@ -54,13 +58,36 @@ class CharacteristicsHistoryActivity : AppCompatActivity() {
 
         mActionButton.setOnClickListener {
             val idList = mOuterAdapter?.getcheckIdList()
-            if (!idList.isNullOrEmpty()){
-                GlobalScope.launch(Dispatchers.IO) {
-                    val measurementDao = AppDatabase.getDatabase(this@CharacteristicsHistoryActivity).measurementDao()
-                    measurementDao?.deleteMeasurementsByIds(idList)
-                    // 更新测量数据
-                    mMeasurementDatas = queryMeasurement(storedUserEmail!!)
+            when(selectedTask){
+                "delete" -> {
+                    if (!idList.isNullOrEmpty()){
+                        GlobalScope.launch(Dispatchers.IO) {
+                            val measurementDao = AppDatabase.getDatabase(this@CharacteristicsHistoryActivity).measurementDao()
+                            measurementDao?.deleteMeasurementsByIds(idList)
+                            // 更新测量数据
+                            mMeasurementDatas = queryMeasurement(storedUserEmail!!)
 
+                            // 在主线程中更新 UI
+                            runOnUiThread {
+                                // 恢复动作按钮的可见性
+                                mActionButton.visibility = View.GONE
+                                // 通知适配器数据已更改
+                                mOuterAdapter?.setMeasurementDatas(mMeasurementDatas)
+                                toggleCheckBoxVisibility(false)
+                                mOuterAdapter?.notifyDataSetChanged()
+                            }
+                        }
+                        Toast.makeText(this, "已经删除成功", Toast.LENGTH_SHORT).show()
+                    }else{
+                        Toast.makeText(this, "没有任何一项被选中", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                "upload" -> {
+                    if (!idList.isNullOrEmpty()){
+                        uploadData()
+                    }else{
+                        Toast.makeText(this, "没有任何一项被选中", Toast.LENGTH_SHORT).show()
+                    }
                     // 在主线程中更新 UI
                     runOnUiThread {
                         // 恢复动作按钮的可见性
@@ -71,9 +98,13 @@ class CharacteristicsHistoryActivity : AppCompatActivity() {
                         mOuterAdapter?.notifyDataSetChanged()
                     }
                 }
-                Toast.makeText(this, "已经删除成功", Toast.LENGTH_SHORT).show()
-            }else{
-                Toast.makeText(this, "没有任何一项被选中", Toast.LENGTH_SHORT).show()
+                "download" ->{
+
+                }
+                else ->{
+                    Toast.makeText(this, "请选择一个任务", Toast.LENGTH_SHORT).show()
+                }
+
             }
         }
     }
@@ -101,17 +132,25 @@ class CharacteristicsHistoryActivity : AppCompatActivity() {
         return  true
     }
 
+    var selectedTask: String = ""
+
     override fun onOptionsItemSelected(item: MenuItem):Boolean{
         when(item.itemId){
             R.id.delete_items->{
                 mActionButton.visibility = View.VISIBLE
                 toggleCheckBoxVisibility(true)
+                selectedTask = "delete"
                 return true
             }
             R.id.upload_items->{
+                mActionButton.visibility = View.VISIBLE
+                toggleCheckBoxVisibility(true)
+                selectedTask = "upload"
+                uploadData()
                 return true
             }
             R.id.download_items->{
+                selectedTask = "download"
                 return true
             }
         }
@@ -142,7 +181,7 @@ class CharacteristicsHistoryActivity : AppCompatActivity() {
             // 根据 measurementId 获取该测量的数据点历史记录q
             val dataPoints = measurement?.measurementId?.let {
                 dataPointDao?.getDataPointsForMeasurement(
-                    it
+                    it,userEmail
                 )
             } ?: emptyList()
 
@@ -168,5 +207,64 @@ class CharacteristicsHistoryActivity : AppCompatActivity() {
         
     }
 
+    private fun uploadData() {
+        val idList = mOuterAdapter?.getcheckIdList()
+        if (!idList.isNullOrEmpty()) {
+            // 构建要发送的数据
+            val sendData = constructSendData(idList)
+            // 发送数据到后端
+            DataSender().sendDataToBackend(sendData)
+            Toast.makeText(this, "数据已上传", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "没有任何一项被选中", Toast.LENGTH_SHORT).show()
+        }
+    }
 
+    private fun constructSendData(idList: List<String>): List<MeasurementData> {
+        val sendData = ArrayList<MeasurementData>()
+
+        idList.forEach { id ->
+            val measurement = mMeasurementDatas.find { it.measurementId == id }
+            measurement?.let {
+                sendData.add(it)
+            }
+        }
+        return sendData
+    }
+
+
+    inner class DataSender {
+        private val client = OkHttpClient()
+
+        inner class BackendSender {
+            fun sendData(data: Any) {
+                val url = "http://39.105.8.110:6666/upload_data"
+                val json = Gson().toJson(data)
+
+                val body = RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), json)
+                val request = Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .build()
+
+                client.newCall(request).enqueue(object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+                        e.printStackTrace()
+                    }
+
+                    override fun onResponse(call: Call, response: Response) {
+                        response.use {
+                            if (!response.isSuccessful) throw IOException("Unexpected code $response")
+                            println(response.body?.string())
+                        }
+                    }
+                })
+            }
+        }
+
+        fun sendDataToBackend(data: Any) {
+            val sender = BackendSender()
+            sender.sendData(data)
+        }
+    }
 }

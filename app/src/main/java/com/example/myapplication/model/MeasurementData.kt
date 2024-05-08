@@ -3,13 +3,13 @@ package com.example.myapplication.model
 import com.example.myapplication.model.dataPointModel.DataPoint
 
 class MeasurementData(
-    measurementId: Long?,
+    measurementId: String?,
     userEmail: String?,
     timestamp: Long?,
     description: String?,
     dataPoints: List<DataPoint>?
 ) {
-    var measurementId: Long? = measurementId
+    var measurementId: String? = measurementId
     var userEmail: String? = userEmail
     var timestamp: Long? = timestamp
     var description: String? = description
@@ -21,5 +21,4 @@ class MeasurementData(
 class DataPointData{
     var value: String?=null
     var dataPointId: Int? = null
-
 }

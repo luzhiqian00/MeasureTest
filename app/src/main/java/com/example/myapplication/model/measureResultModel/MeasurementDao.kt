@@ -2,6 +2,7 @@ package com.example.myapplication.model.measureResultModel
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 
@@ -9,6 +10,8 @@ import androidx.room.Query
 interface MeasurementDao {
     @Insert
     fun insertMeasurement(measurement: Measurement?):Long
+
+
 
     @Query("SELECT * FROM measurements WHERE userEmail = :userEmail")
     fun getMeasurementsForUser(userEmail: String): List<Measurement?>?
@@ -20,6 +23,9 @@ interface MeasurementDao {
     fun deleteMeasurementById(measurementId: Long): Int
 
     @Query("DELETE FROM measurements WHERE measurementId IN (:measurementIds)")
-    fun deleteMeasurementsByIds(measurementIds: List<Long>): Int
+    fun deleteMeasurementsByIds(measurementIds: List<String>): Int
+
+    @Query("DELETE FROM measurements WHERE measurementId = :measurementId AND userEmail = :userEmail")
+    fun deleteMeasurementByMeasurementIdAndUserEmail(measurementId: String, userEmail: String): Int
 
 }

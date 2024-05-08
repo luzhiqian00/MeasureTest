@@ -15,9 +15,9 @@ import org.w3c.dom.Text
 class OuterAdapter(private var outerData: List<MeasurementData>) : RecyclerView.Adapter<OuterAdapter.ViewHolder>() {
 
     var showCheckBoxes = false
-    private var checkedIdList = ArrayList<Long>()
+    private var checkedIdList = ArrayList<String>()
 
-    fun getcheckIdList():ArrayList<Long>{
+    fun getcheckIdList():ArrayList<String>{
         return checkedIdList
     }
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -34,7 +34,7 @@ class OuterAdapter(private var outerData: List<MeasurementData>) : RecyclerView.
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val measurement = outerData[position]
-        holder.measurementId.text = measurement.measurementId.toString()
+        holder.measurementId.text = measurement.measurementId
         holder.measurementDescription.text = measurement.description
         val innerDataList = measurement.dataPoints
         holder.innerRecyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
