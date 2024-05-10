@@ -11,10 +11,11 @@ interface MeasurementDao {
     @Insert
     fun insertMeasurement(measurement: Measurement?):Long
 
-
-
     @Query("SELECT * FROM measurements WHERE userEmail = :userEmail")
     fun getMeasurementsForUser(userEmail: String): List<Measurement?>?
+
+    @Query("SELECT EXISTS(SELECT 1 FROM measurements WHERE measurementId = :measurementId AND userEmail = :userEmail)")
+    fun doesMeasurementExist(measurementId: String, userEmail: String): Boolean
 
     @Query("DELETE FROM measurements WHERE userEmail = :userEmail")
     fun deleteMeasurementsForUser(userEmail: String): Int

@@ -304,7 +304,7 @@ class CharacteristicActivity : AppCompatActivity() {
         // 创建 DataPoint 实体
         val dataPoint = DataPoint(
             measurementId = measurementId!!, // 确保类型匹配
-            value = value,
+            value = value.split("\n").getOrNull(1).toString(),
             userEmail = userEmail
         )
 
@@ -341,7 +341,7 @@ class CharacteristicActivity : AppCompatActivity() {
         values.map { value ->
             val dataPoint = DataPoint(
                 measurementId = measurementId,
-                value = value,
+                value = value.split("\n").getOrNull(1).toString(),
                 userEmail = userEmail
             )
             dataPointDao?.insertDataPoint(dataPoint)

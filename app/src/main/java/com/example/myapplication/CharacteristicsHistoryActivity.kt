@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -12,12 +13,17 @@ import com.example.myapplication.UI.OuterAdapter
 import com.example.myapplication.databinding.ActivityCharacteristicsHistoryBinding
 import com.example.myapplication.model.AppDatabase
 import com.example.myapplication.model.MeasurementData
+import com.example.myapplication.model.MeasurementsResponse
 import com.example.myapplication.model.dataPointModel.DataPoint
+import com.example.myapplication.model.measureResultModel.Measurement
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 
 class CharacteristicsHistoryActivity : AppCompatActivity() {
@@ -151,6 +157,7 @@ class CharacteristicsHistoryActivity : AppCompatActivity() {
             }
             R.id.download_items->{
                 selectedTask = "download"
+                downloadData()  // 调用下载数据的方法
                 return true
             }
         }
@@ -220,6 +227,54 @@ class CharacteristicsHistoryActivity : AppCompatActivity() {
         }
     }
 
+    private fun downloadData() {
+        // 确保 userEmail 不为空
+        storedUserEmail?.let { email ->
+            val url = "http://39.105.8.110:6666/download_data?userEmail=${Uri.encode(email)}" // 使用 Uri.encode 确保 URL 安全
+            DataSender().fetchDataFromBackend(url) { downloadedData ->
+                CoroutineScope(Dispatchers.IO).launch {
+                    val database = AppDatabase.getDatabase(this@CharacteristicsHistoryActivity)
+                    val measurementDao = database.measurementDao()
+                    val dataPointDao = database.dataPointDao()
+
+                    // 开始数据库事务
+                    database.runInTransaction {
+                        downloadedData.forEach { measurementData ->
+                            // 查询数据库中是否已经存在相同的measurementId
+                            val existingMeasurement = measurementDao?.doesMeasurementExist(measurementData.measurementId.toString(),measurementData.userEmail.toString())
+
+                            // 如果测量数据不存在，则插入
+                            if (existingMeasurement==false) {
+                                // 构造 Measurement 对象
+                                val measurement = Measurement().apply {
+                                    measurementId = measurementData.measurementId.toString()
+                                    userEmail = measurementData.userEmail.toString()
+                                    timestamp = measurementData.timestamp!!
+                                    description = measurementData.description
+                                }
+
+                                // 插入测量数据
+                                measurementDao?.insertMeasurement(measurement)
+
+                                measurementData.dataPoints?.forEach { dataPoint ->
+                                    dataPointDao?.insertDataPoint(dataPoint) // 插入数据点
+                                }
+                            }
+                        }
+                    }
+
+                    // 重新查询数据库以更新UI
+                    mMeasurementDatas = queryMeasurement(email)
+                    withContext(Dispatchers.Main) {
+                        mOuterAdapter?.setMeasurementDatas(mMeasurementDatas)
+                        mOuterAdapter?.notifyDataSetChanged()
+                    }
+                }
+            }
+        } ?: Toast.makeText(this, "用户未登录或邮箱未知", Toast.LENGTH_SHORT).show()
+    }
+
+
     private fun constructSendData(idList: List<String>): List<MeasurementData> {
         val sendData = ArrayList<MeasurementData>()
 
@@ -261,6 +316,41 @@ class CharacteristicsHistoryActivity : AppCompatActivity() {
                 })
             }
         }
+
+        fun fetchDataFromBackend(url: String, onComplete: (List<MeasurementData>) -> Unit) {
+            val request = Request.Builder().url(url).build()
+            val client = if (BuildConfig.DEBUG) {
+                OkHttpClient.Builder()
+                    .connectTimeout(1000, TimeUnit.SECONDS)
+                    .readTimeout(1000, TimeUnit.SECONDS)
+                    .build()
+            } else {
+                OkHttpClient()
+            }
+
+
+
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    e.printStackTrace()
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    response.use {
+                        if (!it.isSuccessful) throw IOException("Unexpected code $response")
+
+                        val jsonData = it.body?.string()
+                        val gson = Gson()
+                        val measurementsResponse: MeasurementsResponse = gson.fromJson(jsonData, MeasurementsResponse::class.java)
+
+                        // 现在可以访问measurementsResponse.measurements来获取数据列表
+                        val data: List<MeasurementData> = measurementsResponse.measurements
+                        onComplete(data)
+                    }
+                }
+            })
+        }
+
 
         fun sendDataToBackend(data: Any) {
             val sender = BackendSender()
