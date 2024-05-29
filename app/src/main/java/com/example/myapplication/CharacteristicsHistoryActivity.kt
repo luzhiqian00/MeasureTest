@@ -84,6 +84,7 @@ class CharacteristicsHistoryActivity : AppCompatActivity() {
                             }
                         }
                         Toast.makeText(this, "已经删除成功", Toast.LENGTH_SHORT).show()
+                        mOuterAdapter?.clearSelection()
                     }else{
                         Toast.makeText(this, "没有任何一项被选中", Toast.LENGTH_SHORT).show()
                     }
@@ -91,6 +92,7 @@ class CharacteristicsHistoryActivity : AppCompatActivity() {
                 "upload" -> {
                     if (!idList.isNullOrEmpty()){
                         uploadData()
+                        mOuterAdapter?.clearSelection()
                     }else{
                         Toast.makeText(this, "没有任何一项被选中", Toast.LENGTH_SHORT).show()
                     }

@@ -9,22 +9,26 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.model.MeasurementData
-import com.example.myapplication.model.dataPointModel.DataPoint
-import org.w3c.dom.Text
 
 class OuterAdapter(private var outerData: List<MeasurementData>) : RecyclerView.Adapter<OuterAdapter.ViewHolder>() {
 
     var showCheckBoxes = false
     private var checkedIdList = ArrayList<String>()
 
-    fun getcheckIdList():ArrayList<String>{
+    fun getcheckIdList(): ArrayList<String> {
         return checkedIdList
     }
+
+    fun clearSelection() {
+        checkedIdList.clear()
+        notifyDataSetChanged() // 通知适配器数据集已更改
+    }
+
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val measurementId:TextView = view.findViewById(R.id.measurementIdTextView)
+        val measurementId: TextView = view.findViewById(R.id.measurementIdTextView)
         val innerRecyclerView: RecyclerView = view.findViewById(R.id.innerRecyclerView)
-        val measurementDescription:TextView = view.findViewById(R.id.measurementDescription)
-        val checkBox:CheckBox = view.findViewById(R.id.measurementSelectionCheckBox)
+        val measurementDescription: TextView = view.findViewById(R.id.measurementDescription)
+        val checkBox: CheckBox = view.findViewById(R.id.measurementSelectionCheckBox)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -42,29 +46,27 @@ class OuterAdapter(private var outerData: List<MeasurementData>) : RecyclerView.
 
         holder.checkBox.visibility = if (showCheckBoxes) View.VISIBLE else View.GONE
 
-        // 为 CheckBox 设置监听器
+        holder.checkBox.setOnCheckedChangeListener(null) // 避免重用时触发旧的监听器
+
+        holder.checkBox.isChecked = checkedIdList.contains(measurement.measurementId)
+
         holder.checkBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                // 如果 CheckBox 被选中，并且 measurementId 尚未添加到 checkedIdList 中，则添加
                 measurement.measurementId?.let {
                     if (!checkedIdList.contains(it)) {
                         checkedIdList.add(it)
                     }
                 }
             } else {
-                // 如果 CheckBox 被取消选中，则将当前项的 measurementId 从 checkedIdList 中移除
                 checkedIdList.remove(measurement.measurementId)
             }
         }
     }
 
-
     override fun getItemCount() = outerData.size
+
     fun setMeasurementDatas(mMeasurementDatas: ArrayList<MeasurementData>) {
         outerData = mMeasurementDatas
+        notifyDataSetChanged()
     }
-
 }
-
-
-
